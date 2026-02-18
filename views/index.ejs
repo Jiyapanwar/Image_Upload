@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Uploader</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      /* BODY */
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        min-height: 100svh;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+
+        background: radial-gradient(circle at 20% 20%, #e0e7ff, transparent 40%),
+          radial-gradient(circle at 80% 80%, #cffafe, transparent 40%), #f8fafc;
+      }
+
+      /* ===== CURSOR GLOW ===== */
+
+      .cursor-glow {
+        position: fixed;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        pointer-events: none;
+
+        background: radial-gradient(
+          circle,
+          rgba(129, 140, 248, 0.35),
+          rgba(236, 72, 153, 0.18),
+          transparent 70%
+        );
+
+        filter: blur(60px);
+
+        transform: translate(-50%, -50%);
+        z-index: 0;
+
+        transition: left 0.18s linear, top 0.18s linear;
+      }
+
+      /* disable glow on touch devices */
+      @media (pointer: coarse) {
+        .cursor-glow {
+          display: none;
+        }
+      }
+
+      /* ===== CARD ===== */
+
+      .card {
+        position: relative;
+        z-index: 1;
+
+        width: 100%;
+        max-width: 420px;
+
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(14px);
+
+        border-radius: 18px;
+        padding: 38px 34px;
+
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08),
+          0 2px 8px rgba(0, 0, 0, 0.05);
+
+        text-align: center;
+      }
+
+      /* TEXT */
+
+      h1 {
+        margin: 0 0 22px;
+        font-size: 24px;
+        color: #1e293b;
+      }
+
+      /* FILE BOX */
+
+      .file-box {
+        border: 2px dashed #c7d2fe;
+        padding: 26px 16px;
+        border-radius: 12px;
+        background: #f8fafc;
+        transition: 0.25s;
+      }
+
+      .file-box:hover {
+        border-color: #6366f1;
+        background: #eef2ff;
+      }
+
+      input[type="file"] {
+        width: 100%;
+        cursor: pointer;
+      }
+
+      /* BUTTON */
+
+      button {
+        margin-top: 18px;
+        width: 100%;
+
+        background: linear-gradient(135deg, #a179f0, #d88b42);
+        color: white;
+
+        border: none;
+        padding: 12px;
+
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+
+        cursor: pointer;
+        transition: 0.25s;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(79, 70, 229, 0.35);
+      }
+
+      /* FILE NAME */
+
+      .filename {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #475569;
+      }
+
+      /* PREVIEW */
+
+      .preview {
+        margin-top: 28px;
+      }
+
+      .preview img {
+        width: 100%;
+        border-radius: 12px;
+        margin-top: 12px;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+      }
+
+      /* SHORT SCREEN FIX */
+
+      @media (max-height: 650px) {
+        body {
+          padding: 14px;
+          align-items: start;
+        }
+
+        .card {
+          padding: 28px 22px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- cursor animation element -->
+    <div class="cursor-glow" id="glow"></div>
+
+    <div class="card">
+      <h1>Upload Image</h1>
+
+      <form action="" method="POST" enctype="multipart/form-data">
+        <div class="file-box">
+          <input type="file" name="file" id="file-input" />
+          <div class="filename" id="filename"></div>
+        </div>
+
+        <button type="submit">Upload</button>
+      </form>
+
+      <div class="preview">
+        <% if(url) { %>
+        <h3>Uploaded Successfully</h3>
+        <img src="<%= url %>" alt="Uploaded Image" />
+        <% } %>
+      </div>
+    </div>
+
+    <script>
+      /* filename preview */
+
+      const input = document.getElementById("file-input");
+      const nameBox = document.getElementById("filename");
+
+      input.addEventListener("change", () => {
+        nameBox.textContent = input.files[0] ? input.files[0].name : "";
+      });
+
+      /* cursor glow animation */
+
+      const glow = document.getElementById("glow");
+
+      window.addEventListener("mousemove", (e) => {
+        glow.style.left = e.clientX + "px";
+        glow.style.top = e.clientY + "px";
+      });
+    </script>
+  </body>
+</html>
