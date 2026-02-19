@@ -10,8 +10,6 @@
         box-sizing: border-box;
       }
 
-      /* BODY */
-
       body {
         margin: 0;
         font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -24,7 +22,7 @@
           radial-gradient(circle at 80% 80%, #cffafe, transparent 40%), #f8fafc;
       }
 
-      /* ===== CURSOR GLOW ===== */
+      /* CURSOR GLOW */
 
       .cursor-glow {
         position: fixed;
@@ -32,59 +30,47 @@
         height: 320px;
         border-radius: 50%;
         pointer-events: none;
-
         background: radial-gradient(
           circle,
           rgba(129, 140, 248, 0.35),
           rgba(236, 72, 153, 0.18),
           transparent 70%
         );
-
         filter: blur(60px);
-
         transform: translate(-50%, -50%);
         z-index: 0;
-
-        transition: left 0.18s linear, top 0.18s linear;
       }
 
-      /* disable glow on touch devices */
-      @media (pointer: coarse) {
-        .cursor-glow {
-          display: none;
-        }
-      }
+      /* ===== MAIN LAYOUT ===== */
 
-      /* ===== CARD ===== */
-
-      .card {
+      .container {
         position: relative;
         z-index: 1;
 
-        width: 100%;
-        max-width: 420px;
-
-        background: rgba(255, 255, 255, 0.78);
-        backdrop-filter: blur(14px);
-
-        border-radius: 18px;
-        padding: 38px 34px;
-
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08),
-          0 2px 8px rgba(0, 0, 0, 0.05);
-
-        text-align: center;
+        display: flex;
+        gap: 30px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap; /* IMPORTANT FOR MOBILE */
       }
 
-      /* TEXT */
+      /* CARD */
+
+      .card {
+        width: 360px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(14px);
+        border-radius: 18px;
+        padding: 38px 34px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08),
+          0 2px 8px rgba(0, 0, 0, 0.05);
+        text-align: center;
+      }
 
       h1 {
         margin: 0 0 22px;
         font-size: 24px;
-        color: #1e293b;
       }
-
-      /* FILE BOX */
 
       .file-box {
         border: 2px dashed #c7d2fe;
@@ -101,105 +87,107 @@
 
       input[type="file"] {
         width: 100%;
-        cursor: pointer;
       }
-
-      /* BUTTON */
 
       button {
         margin-top: 18px;
         width: 100%;
-
         background: linear-gradient(135deg, #a179f0, #d88b42);
         color: white;
-
         border: none;
         padding: 12px;
-
         border-radius: 10px;
         font-size: 16px;
         font-weight: 600;
-
         cursor: pointer;
-        transition: 0.25s;
       }
-
-      button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 18px rgba(79, 70, 229, 0.35);
-      }
-
-      /* FILE NAME */
 
       .filename {
         margin-top: 10px;
         font-size: 13px;
-        color: #475569;
       }
 
-      /* PREVIEW */
+      /* IMAGE PANEL */
 
-      .preview {
-        margin-top: 28px;
+      .preview-card {
+        width: 360px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(14px);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        text-align: center;
+
+        animation: fadeIn 0.6s ease;
       }
 
-      .preview img {
+      .preview-card img {
         width: 100%;
         border-radius: 12px;
-        margin-top: 12px;
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+        margin-top: 10px;
       }
 
-      /* SHORT SCREEN FIX */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-      @media (max-height: 650px) {
-        body {
-          padding: 14px;
-          align-items: start;
+      /* MOBILE */
+
+      @media (max-width: 800px) {
+        .container {
+          flex-direction: column;
         }
 
-        .card {
-          padding: 28px 22px;
+        .card,
+        .preview-card {
+          width: 100%;
+          max-width: 420px;
         }
       }
     </style>
   </head>
 
   <body>
-    <!-- cursor animation element -->
     <div class="cursor-glow" id="glow"></div>
 
-    <div class="card">
-      <h1>Upload Image</h1>
+    <div class="container">
+      <!-- FORM CARD -->
+      <div class="card">
+        <h1>Upload Image</h1>
 
-      <form action="" method="POST" enctype="multipart/form-data">
-        <div class="file-box">
-          <input type="file" name="file" id="file-input" />
-          <div class="filename" id="filename"></div>
-        </div>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+          <div class="file-box">
+            <input type="file" name="file" id="file-input" />
+            <div class="filename" id="filename"></div>
+          </div>
 
-        <button type="submit">Upload</button>
-      </form>
-
-      <div class="preview">
-        <% if(url) { %>
-        <h3>Uploaded Successfully</h3>
-        <img src="<%= url %>" alt="Uploaded Image" />
-        <% } %>
+          <button type="submit">Upload</button>
+        </form>
       </div>
+
+      <!-- IMAGE SHOWS BESIDE -->
+      <% if(url) { %>
+      <div class="preview-card">
+        <h3>Uploaded Successfully</h3>
+        <img src="<%= url %>" />
+      </div>
+      <% } %>
     </div>
 
     <script>
-      /* filename preview */
-
       const input = document.getElementById("file-input");
       const nameBox = document.getElementById("filename");
 
       input.addEventListener("change", () => {
         nameBox.textContent = input.files[0] ? input.files[0].name : "";
       });
-
-      /* cursor glow animation */
 
       const glow = document.getElementById("glow");
 
