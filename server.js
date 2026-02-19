@@ -16,12 +16,9 @@ cloudinary.config({
 });
 
 mongoose
-  .connect(
-    "mongodb+srv://jiyapanwar2424_db_user:bUJ14BXpIOKsgiyw@cluster0.ckqnnfm.mongodb.net/",
-    {
-      dbName: "ImageUplaod",
-    }
-  )
+  .connect(process.env.CONNECTION_URI, {
+    dbName: "ImageUplaod",
+  })
   .then(() => console.log("MongoDB Connected..!"))
   .catch((err) => console.log(err));
 
